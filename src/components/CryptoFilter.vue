@@ -91,20 +91,20 @@ onBeforeUnmount(() => {
   >
     <header class="mb-4">
       <h2 id="filter-title" class="text-sm font-semibold uppercase tracking-wider text-slate-500">
-        Filters
+        Filtros
       </h2>
-      <p class="mt-1 text-lg font-semibold text-slate-900">Choose coins</p>
+      <p class="mt-1 text-lg font-semibold text-slate-900">Selecciona monedas</p>
       <p class="text-sm text-slate-500">
-        {{ selected.length }} of {{ coins.length }} selected
+        {{ selected.length }} de {{ coins.length }} seleccionadas
       </p>
     </header>
 
     <label class="block">
-      <span class="sr-only">Search coins</span>
+      <span class="sr-only">Busca monedas</span>
       <input
         v-model="query"
         type="search"
-        placeholder="Search BTC, Ethereum…"
+        placeholder="BTC, Ethereum…"
         class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition"
       />
     </label>
@@ -115,14 +115,14 @@ onBeforeUnmount(() => {
         class="rounded-md px-2 py-1 text-slate-600 hover:bg-slate-100 transition"
         @click="selectAll"
       >
-        Select all
+        Seleccionar todas
       </button>
       <button
         type="button"
         class="rounded-md px-2 py-1 text-slate-600 hover:bg-slate-100 transition"
         @click="clearAll"
       >
-        Clear
+        Limpiar
       </button>
     </div>
 

@@ -130,7 +130,6 @@
       try {
         ws.close();
       } catch {
-        /* ignore */
       }
       ws = null;
     }
@@ -234,30 +233,28 @@
 >
   <header class="mb-4 flex items-center justify-between">
     <div>
-      <h2
-        id="ticker-title"
-        class="text-sm font-semibold uppercase tracking-wider text-slate-500"
-      >
-        Live prices
-      </h2>
-      <p class="mt-1 text-lg font-semibold text-slate-900">Streaming from Binance</p>
+      <p class="mt-1 text-lg font-semibold text-slate-900">Streaming desde Binance (WebSockets)</p>
     </div>
     <span class="inline-flex items-center gap-2 text-xs">
       {#if status === 'live'}
         <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-slate-600">Live</span>
+        <span class="text-slate-600">En vivo</span>
       {:else if status === 'connecting'}
         <span class="h-2 w-2 rounded-full bg-amber-500"></span>
-        <span class="text-slate-600">Connecting…</span>
+        <span class="text-slate-600">Conectando…</span>
       {:else if status === 'error'}
         <span class="h-2 w-2 rounded-full bg-rose-500"></span>
-        <span class="text-slate-600">Disconnected</span>
+        <span class="text-slate-600">Desconectado</span>
       {:else}
         <span class="h-2 w-2 rounded-full bg-slate-300"></span>
-        <span class="text-slate-500">Idle</span>
+        <span class="text-slate-500">Inactivo</span>
       {/if}
     </span>
   </header>
+  <p class="mb-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-600">
+    Si no nos crees que son datos reales y en vivo, haz click sobre la tarjeta de la 
+    criptomoneda que quieras para abrir su página en CoinGecko.
+  </p>
 
   {#if selectedCoins.length === 0}
     <div class="py-16 text-center text-sm text-slate-400">
@@ -269,6 +266,13 @@
         {@const live = prices[coin.symbol]}
         {@const pct = live?.changePct ?? null}
         {@const up = pct !== null && pct >= 0}
+        <a
+          href={`https://www.coingecko.com/es/monedas/${coin.coingeckoId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block"
+          title={`Ver ${coin.name} en CoinGecko`}
+        >
         <article
           class="rounded-xl border border-slate-200 p-4 transition hover:border-slate-300 hover:-translate-y-0.5"
         >
@@ -302,6 +306,7 @@
             <canvas id={`chart-${coin.symbol}`} class="absolute inset-0"></canvas>
           </div>
         </article>
+        </a>
       {/each}
     </div>
   {/if}
