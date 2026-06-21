@@ -18,7 +18,7 @@ Tarea **t7** del curso **Diseño Avanzado de Aplicaciones Web**. Consiste en una
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321
+npm run dev  
 ```
 
 ### Build local
