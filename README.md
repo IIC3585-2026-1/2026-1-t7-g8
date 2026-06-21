@@ -1,55 +1,74 @@
-# Crypto Live — Astro Islands Dashboard
+# Crypto Live — Dashboard de criptomonedas en vivo con Astro Islands
 
-Assignment **t7** for PUC's *Advanced Web Applications* course. A static Astro
-page that hosts two interactive islands: a **Vue** filter panel and a **Svelte**
-live-price ticker driven by the Binance WebSocket.
+Tarea **t7** del curso **Diseño Avanzado de Aplicaciones Web**. Consiste en una página estática desarrollada con **Astro** que integra dos islas interactivas: un panel de filtros implementado en **Vue** y un visualizador de precios en tiempo real desarrollado con **Svelte**, alimentado mediante el WebSocket de Binance.
 
-```
+```text
 ┌───────────────────────────────────────────────────────────┐
-│  Astro (static HTML, server-side fetch of coin metadata)  │
+│   Astro (HTML estático + obtención de metadatos en build) │
 │                                                           │
-│   ┌─────────────────────┐    ┌──────────────────────┐     │
-│   │  Vue (client:load)  │ ─▶ │ Svelte (client:visible)│   │
-│   │   filter + form     │  ▲ │ Binance WS + Chart.js │    │
-│   └─────────────────────┘  │ └──────────────────────┘     │
-│              window CustomEvent('crypto:selection-changed')│
+│   ┌─────────────────────┐    ┌────────────────────────┐   │
+│   │ Vue (client:load)   │ ─▶ │ Svelte (client:visible)│   │
+│   │ Filtros y búsqueda  │  ▲ │ WebSocket + Chart.js   │   │
+│   └─────────────────────┘  │ └────────────────────────┘   │
+│        window CustomEvent('crypto:selection-changed')     │
 └───────────────────────────────────────────────────────────┘
 ```
 
-See **[ARCHITECTURE.md](./ARCHITECTURE.md)** for a full walkthrough of how
-Astro works, why each island uses the framework it does, and how the two
-islands talk to each other.
-
-## Quickstart
+## Inicio rápido
 
 ```sh
 npm install
 npm run dev      # http://localhost:4321
-npm run build    # outputs static site to ./dist
-npm run preview  # serve the built site locally
 ```
 
-Node **22.12+** is required (set in `package.json` engines).
+### Build local
 
-## What each piece does
+```sh
+npm install
+npm run build    # Genera el sitio estático en ./dist
+npm run preview  # Sirve localmente la versión compilada (debes ejecutar run build antes)
+```
 
-| Layer  | Files                                | Job                                                              |
-| ------ | ------------------------------------ | ---------------------------------------------------------------- |
-| Astro  | `src/pages/index.astro`, layouts     | Render the static shell; fetch coin metadata from CoinGecko at build. |
-| Vue    | `src/components/CryptoFilter.vue`    | Coin checklist + search. Owns the selection, persists to `localStorage`, broadcasts changes. |
-| Svelte | `src/components/PriceTicker.svelte`  | Listens for selection changes, seeds Chart.js sparklines from Binance REST klines, streams updates via WebSocket. |
-| Shared | `src/lib/island-bus.ts`              | Event names + types both islands import.                         |
-| Shared | `src/lib/coins.ts`                   | The static coin catalog (symbols, Binance pairs, CoinGecko IDs). |
+**Importante:** Se requiere **Node.js 22.12 o superior**, configurado en la sección `engines` del `package.json`.
 
-## Extending
+**Nota:** Durante el desarrollo, es posible que la API de CoinGecko retorne errores 429 (Too Many Requests) debido a sus límites de rate limiting en el plan gratuito. Esto puede provocar que algunos metadatos de criptomonedas no se carguen en modo desarrollo (como las imágenes por ejemplo). La aplicación sigue funcionando normalmente, ya que este paso es opcional y no afecta la funcionalidad principal de las islas ni el flujo en tiempo real de precios desde Binance.
 
-- **Add a coin** → add an entry to `COINS` in `src/lib/coins.ts`.
-- **Add a new cross-island event** → declare it in `src/lib/island-bus.ts`,
-  import it from both islands.
-- **Swap the chart library** → only `PriceTicker.svelte` needs to change.
-- **Add reconnection / dark mode / more timeframes** → see the "Out of scope"
-  section at the bottom of `ARCHITECTURE.md`.
+## Estructura del proyecto
 
-## Stack
+| Capa | Archivos | Función |
+|------|----------|---------|
+| **Astro** | `src/pages/index.astro`, layouts | Renderiza la estructura estática del sitio y obtiene los metadatos de las criptomonedas desde CoinGecko durante el proceso de compilación. |
+| **Vue** | `src/components/CryptoFilter.vue` | Implementa el panel de búsqueda y selección de criptomonedas. Mantiene el estado de la selección, lo guarda en `localStorage` y notifica los cambios al resto de la aplicación. |
+| **Svelte** | `src/components/PriceTicker.svelte` | Escucha los cambios de selección, obtiene el historial inicial desde la API REST de Binance, genera los gráficos con Chart.js y actualiza los precios en tiempo real mediante WebSockets. |
+| **Compartido** | `src/lib/island-bus.ts` | Define los eventos y tipos utilizados para la comunicación entre las islas. |
+| **Compartido** | `src/lib/coins.ts` | Contiene el catálogo estático de criptomonedas (símbolos, pares de Binance e identificadores de CoinGecko). |
 
-Astro 6 · Vue 3.5 · Svelte 5 (runes) · Tailwind CSS v4 · Chart.js 4 · TypeScript (strict).
+## Tecnologías utilizadas
+
+- Astro 6
+- Vue 3.5
+- Svelte 5 (Runes)
+- Tailwind CSS v4
+- Chart.js 4
+- TypeScript (modo estricto)
+
+## Uso de IA
+
+Durante el desarrollo de este proyecto se utilizó IA como herramienta de apoyo en distintas etapas del proceso, principalmente como asistente técnico y de documentación. Su uso no reemplazó el trabajo de implementación, sino que facilitó la comprensión y aceleró ciertas decisiones de diseño.
+
+En particular, se utilizó IA para:
+
+- El diseño de la estructura y estilos de la página (HTML y CSS), especialmente en la organización general del layout, la disposición de componentes y el estilo para que todo se viera bien.
+- Resolver dudas relacionadas con el funcionamiento del framework Astro, en especial el concepto de islas y sus distintos modos de hidratación.
+- Entender e integrar correctamente la comunicación entre componentes de distintas tecnologías (Vue y Svelte) dentro del ecosistema de Astro.
+- Generar la documentación del proyecto, incluyendo la redacción de este README y explicaciones técnicas de las decisiones tomadas.
+
+En todos los casos, las soluciones propuestas por la IA fueron revisadas, adaptadas e integradas manualmente en el proyecto.
+
+## Autoevaluación
+
+Como equipo consideramos que el proyecto cumple adecuadamente con los requisitos establecidos en el entregable. Se logró implementar una aplicación funcional que integra correctamente Astro con islas interactivas en Vue y Svelte, incluyendo comunicación entre componentes, uso de WebSockets y consumo de APIs externas en tiempo real.
+
+A pesar del corto tiempo disponible para la entrega, se consiguió un buen entendimiento general del framework y de su modelo de renderizado, así como de la integración entre distintas tecnologías frontend modernas.
+
+Sin embargo, identificamos algunos aspectos que podrían haberse mejorado, especialmente la planificación del trabajo y la división de tareas dentro del equipo. Una mejor coordinación inicial habría permitido avanzar de forma más paralela y con menos fricción en la integración final. Atribuímos esto a que estamos terminando el semestre, por lo que la carga academica está bastante alta.
